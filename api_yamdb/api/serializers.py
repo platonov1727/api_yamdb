@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
 from titles.models import User, Title, Genre, Category
+from comments.models import Review, Comment
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -31,3 +32,21 @@ class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         fields = ('name', 'slug')
         model = Category
+
+
+class ReviewSerializer(serializers.ModelSerializer):
+    author = serializers.SlugRelatedField(read_only=True,
+                                          slug_field='username')
+
+    class Meta:
+        fields = '__all__'
+        model = Review
+
+
+class CommentSerializer(serializers.ModelSerializer):
+    author = serializers.SlugRelatedField(read_only=True,
+                                          slug_field='username')
+
+    class Meta:
+        fields = '__all__'
+        model = Comment
