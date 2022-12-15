@@ -4,7 +4,7 @@ from titles.models import User, Title, Genre, Category, Review, Comment
 
 
 class UserSerializer(serializers.ModelSerializer):
-    
+
     class Meta:
         model = User
         fields = ('id', 'username', 'first_name', 'last_name')
@@ -35,7 +35,6 @@ class CategorySerializer(serializers.ModelSerializer):
 class ReviewSerializer(serializers.ModelSerializer):
     author = serializers.SlugRelatedField(read_only=True,
                                           slug_field='username')
-    
 
     class Meta:
         fields = '__all__'
