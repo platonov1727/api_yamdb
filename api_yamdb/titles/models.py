@@ -1,5 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.db import models
+from django.core.validators import MinValueValidator, MaxValueValidator
 
 User = get_user_model()
 
@@ -25,9 +26,7 @@ class Title(models.Model):
     year = models.IntegerField()
     description = models.TextField()
     genre = models.ManyToManyField(Genre,
-                                   through='GenreTitle',
-                                   blank=True,
-                                   null=True)
+                                   through='GenreTitle')
     category = models.ForeignKey(Category,
                                  on_delete=models.CASCADE,
                                  related_name='titles')
@@ -45,12 +44,17 @@ class GenreTitle(models.Model):
 
 
 class Review(models.Model):
-    title = models.CharField(max_length=50)
+    title = models.ForeignKey(Title,
+                              on_delete=models.CASCADE,
+                              related_name='reviews')
     text = models.TextField(max_length=4000)
     author = models.ForeignKey(User,
                                on_delete=models.CASCADE,
                                related_name='rewiews')
     pub_date = models.DateTimeField(auto_now_add=True, db_index=True)
+    score = models.IntegerField(
+        validators=[MinValueValidator(1),
+                    MaxValueValidator(10)])
 
 
 class Comment(models.Model):
