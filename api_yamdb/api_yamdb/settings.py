@@ -29,7 +29,7 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'django_filters',
     'users',
-    'import_export',,
+    'import_export',
 ]
 
 MIDDLEWARE = [
