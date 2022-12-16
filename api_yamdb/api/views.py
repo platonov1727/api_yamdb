@@ -1,10 +1,13 @@
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import filters, viewsets
+from rest_framework import filters, viewsets, status
 from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from rest_framework.response import Response
+from rest_framework.views import APIView
 
-from titles.models import Category, Genre, Title, User
+from titles.models import Category, Genre, Title
+from users.models import User
 
 from .permissions import IsAuthorOrReadOnly
 from .serializers import (CategorySerializer, CommentSerializer,
@@ -34,9 +37,43 @@ class CategoryViewSet(viewsets.ModelViewSet):
     search_fields = ('name', )
 
 
-class UserViewSet(viewsets.ReadOnlyModelViewSet):
+class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
+    lookup_field = 'username'
+    # permission_classes = [IsAdmin]
+    filter_backends = [filters.SearchFilter]
+    search_fields = [
+        'user__username',
+    ]
+
+
+class UserMePatchView(APIView):
+
+    def get(self, request):
+        if request.user.is_authenticated:
+            user = get_object_or_404(User, id=request.user.id)
+            serializer = UserSerializer(user)
+            return Response(serializer.data)
+        return Response('Вы не авторизованы',
+                        status=status.HTTP_401_UNAUTHORIZED)
+
+    def patch(self, request):
+        if request.user.is_authenticated:
+            user = get_object_or_404(User, id=request.user.id)
+            serializer = UserSerializer(user, data=request.data, partial=True)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            return Response(serializer.errors,
+                            status=status.HTTP_400_BAD_REQUEST)
+        return Response('Вы не авторизованы',
+                        status=status.HTTP_401_UNAUTHORIZED)
+
+
+# class UserViewSet(viewsets.ReadOnlyModelViewSet):
+#     queryset = User.objects.all()
+#     serializer_class = UserSerializer
 
 
 class CommentViewSet(viewsets.ModelViewSet):
@@ -55,7 +92,8 @@ class CommentViewSet(viewsets.ModelViewSet):
 
 class ReviewViewSet(viewsets.ModelViewSet):
     serializer_class = ReviewSerializer
-    permission_classes = (IsAuthenticatedOrReadOnly, IsAuthorOrReadOnly)
+
+    # permission_classes = (IsAuthenticatedOrReadOnly, IsAuthorOrReadOnly)
 
     def get_queryset(self):
         title = get_object_or_404(Title, pk=self.kwargs.get('title_id'))

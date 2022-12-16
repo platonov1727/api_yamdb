@@ -2,7 +2,7 @@ from django.contrib.auth import get_user_model
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
 
-User = get_user_model()
+from users.models import User
 
 
 class Genre(models.Model):
@@ -25,8 +25,7 @@ class Title(models.Model):
     name = models.CharField(max_length=256)
     year = models.IntegerField()
     description = models.TextField()
-    genre = models.ManyToManyField(Genre,
-                                   through='GenreTitle')
+    genre = models.ManyToManyField(Genre, through='GenreTitle')
     category = models.ForeignKey(Category,
                                  on_delete=models.CASCADE,
                                  related_name='titles')

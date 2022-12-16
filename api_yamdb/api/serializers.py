@@ -1,13 +1,16 @@
 from rest_framework import serializers
 
-from titles.models import User, Title, Genre, Category, Review, Comment
+from titles.models import Title, Genre, Category, Review, Comment
+from users.models import User
+
 
 
 class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('id', 'username', 'first_name', 'last_name')
+        fields = ('username', 'email', 'first_name', 'last_name', 'bio', 'role')
+        required_fields = ('email', 'username', )
         ref_name = 'ReadOnlyUsers'
 
 
