@@ -11,6 +11,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
+IMPORT_EXPORT_USE_TRANSACTIONS = True
 
 # Application definition
 
@@ -25,7 +26,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'django_filters',
-    'users'
+    'users',
+    'import_export',
 ]
 
 MIDDLEWARE = [
@@ -102,8 +104,9 @@ USE_TZ = True
 
 
 # Static files (CSS, JavaScript, Images)
+# STATIC_ROOT = (BASE_DIR / 'static/')
 
-STATIC_URL = '/static/'
+STATIC_URL = 'static/'
 
 STATICFILES_DIRS = ((BASE_DIR / 'static/'),)
 
