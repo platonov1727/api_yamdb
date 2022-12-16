@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Title, Genre, Category, GenreTitle
+from .models import Title, Genre, Category, GenreTitle, Review, Comment
 from import_export import resources
 from import_export.admin import ImportExportModelAdmin
 
@@ -113,7 +113,83 @@ class GenreTitleAdmin(ImportExportModelAdmin):
     empty_value_display = '-пусто-'
 
 
+class ReviewResource(resources.ModelResource):
+
+    def get_export_headers(self):
+        headers = super().get_export_headers()
+        for i, h in enumerate(headers):
+            if h == 'title_id':
+                headers[i] = 'title'
+        return headers
+
+    class Meta:
+        model = Review
+        fields = (
+            'id',
+            'title',
+            'text',
+            'author',
+            'score',
+            'pub_date',
+        )
+
+
+class ReviewAdmin(ImportExportModelAdmin):
+    resource_classes = [ReviewResource]
+    # Перечисляем поля, которые должны отображаться в админке
+    list_display = (
+        'id',
+        'title',
+        'text',
+        'author',
+        'score',
+        'pub_date',
+    )
+
+    # Добавляем интерфейс для поиска
+    search_fields = ('text',)
+    empty_value_display = '-пусто-'
+
+
+class CommentResource(resources.ModelResource):
+
+    def get_export_headers(self):
+        headers = super().get_export_headers()
+        for i, h in enumerate(headers):
+            if h == 'review_id':
+                headers[i] = 'review'
+        return headers
+
+    class Meta:
+        model = Comment
+        fields = (
+            'id',
+            'review',
+            'text',
+            'author',
+            'pub_date',
+        )
+
+
+class CommentAdmin(ImportExportModelAdmin):
+    resource_classes = [CommentResource]
+    # Перечисляем поля, которые должны отображаться в админке
+    list_display = (
+        'id',
+        'review',
+        'text',
+        'author',
+        'pub_date',
+    )
+
+    # Добавляем интерфейс для поиска
+    search_fields = ('text',)
+    empty_value_display = '-пусто-'
+
+
 admin.site.register(Title, TitleAdmin)
 admin.site.register(Genre, GenreAdmin)
 admin.site.register(Category, CategoryAdmin)
 admin.site.register(GenreTitle, GenreTitleAdmin)
+admin.site.register(Review, ReviewAdmin)
+admin.site.register(Comment, CommentAdmin)

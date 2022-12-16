@@ -56,3 +56,40 @@ class GenreTitle(models.Model):
 
     def __str__(self):
         return f'{self.title} в жанре {self.genre}'
+
+
+class Review(models.Model):
+    title = models.ForeignKey(Title,
+                              on_delete=models.CASCADE,
+                              related_name='rewiews')
+    text = models.TextField(max_length=4000)
+    author = models.ForeignKey(User,
+                               on_delete=models.CASCADE,
+                               related_name='rewiews')
+    score = models.IntegerField(blank=True, null=True)
+    pub_date = models.DateTimeField(auto_now_add=True, db_index=True)
+
+    class Meta:
+        verbose_name = 'Отзыв'
+        verbose_name_plural = 'Отзывы'
+
+    def __str__(self):
+        return self.title
+
+
+class Comment(models.Model):
+    author = models.ForeignKey(User,
+                               on_delete=models.CASCADE,
+                               related_name='comments')
+    text = models.TextField(max_length=500)
+    pub_date = models.DateTimeField(auto_now_add=True, db_index=True)
+    review = models.ForeignKey(Review,
+                               on_delete=models.CASCADE,
+                               related_name='comments')
+
+    class Meta:
+        verbose_name = 'Комментарий'
+        verbose_name_plural = 'Комментарии'
+
+    def __str__(self):
+        return self.text
