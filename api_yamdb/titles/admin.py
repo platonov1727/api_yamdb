@@ -2,6 +2,8 @@ from django.contrib import admin
 from .models import Title, Genre, Category, GenreTitle, Review, Comment
 from import_export import resources
 from import_export.admin import ImportExportModelAdmin
+from import_export.fields import Field
+from import_export import widgets
 
 
 class TitleResource(resources.ModelResource):
@@ -82,15 +84,16 @@ class CategoryAdmin(ImportExportModelAdmin):
 
 
 class GenreTitleResource(resources.ModelResource):
-
-    def get_export_headers(self):
-        headers = super().get_export_headers()
-        for i, h in enumerate(headers):
-            if h == 'genre_id':
-                headers[i] = 'genre'
-            if h == 'title_id':
-                headers[i] = 'title'
-        return headers
+    genre = Field(
+        attribute='genre',
+        column_name='genre_id',
+        widget=widgets.ForeignKeyWidget(Genre)
+    )
+    title = Field(
+        attribute='title',
+        column_name='title_id',
+        widget=widgets.ForeignKeyWidget(Title)
+    )
 
     class Meta:
         model = GenreTitle
@@ -114,13 +117,16 @@ class GenreTitleAdmin(ImportExportModelAdmin):
 
 
 class ReviewResource(resources.ModelResource):
-
-    def get_export_headers(self):
-        headers = super().get_export_headers()
-        for i, h in enumerate(headers):
-            if h == 'title_id':
-                headers[i] = 'title'
-        return headers
+    pub_date = Field(
+        attribute='pub_date',
+        column_name='pub_date',
+        widget=widgets.DateTimeWidget('%Y-%m-%dT%H:%M:%S.%fZ')
+    )
+    title = Field(
+        attribute='title',
+        column_name='title_id',
+        widget=widgets.ForeignKeyWidget(Title)
+    )
 
     class Meta:
         model = Review
@@ -152,13 +158,16 @@ class ReviewAdmin(ImportExportModelAdmin):
 
 
 class CommentResource(resources.ModelResource):
-
-    def get_export_headers(self):
-        headers = super().get_export_headers()
-        for i, h in enumerate(headers):
-            if h == 'review_id':
-                headers[i] = 'review'
-        return headers
+    review = Field(
+        attribute='review',
+        column_name='review_id',
+        widget=widgets.ForeignKeyWidget(Review)
+    )
+    pub_date = Field(
+        attribute='pub_date',
+        column_name='pub_date',
+        widget=widgets.DateTimeWidget('%Y-%m-%dT%H:%M:%S.%fZ')
+    )
 
     class Meta:
         model = Comment

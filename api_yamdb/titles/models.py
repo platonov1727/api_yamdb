@@ -11,6 +11,7 @@ class Genre(models.Model):
     class Meta:
         verbose_name = 'Жанр'
         verbose_name_plural = 'Жанры'
+        ordering = ('slug',)
 
     def __str__(self):
         return self.name
@@ -23,6 +24,7 @@ class Category(models.Model):
     class Meta:
         verbose_name = 'Категория'
         verbose_name_plural = 'Категории'
+        ordering = ('slug',)
 
     def __str__(self):
         return self.name
@@ -40,6 +42,7 @@ class Title(models.Model):
     class Meta:
         verbose_name = 'Произведение'
         verbose_name_plural = 'Произведения'
+        ordering = ('-year',)
 
     def __str__(self):
         return self.name
@@ -60,20 +63,24 @@ class GenreTitle(models.Model):
 class Review(models.Model):
     title = models.ForeignKey(Title,
                               on_delete=models.CASCADE,
-                              related_name='rewiews')
+                              related_name='reviews')
     text = models.TextField(max_length=4000)
     author = models.ForeignKey(User,
                                on_delete=models.CASCADE,
                                related_name='rewiews')
-    score = models.IntegerField(blank=True, null=True)
-    pub_date = models.DateTimeField(auto_now_add=True, db_index=True)
+    pub_date = models.DateTimeField(
+        auto_now_add=True,
+        db_index=True)
+    score = models.IntegerField(
+        validators=[MinValueValidator(1),
+                    MaxValueValidator(10)])
 
     class Meta:
         verbose_name = 'Отзыв'
         verbose_name_plural = 'Отзывы'
 
     def __str__(self):
-        return self.title
+        return self.text
 
 
 class Comment(models.Model):
