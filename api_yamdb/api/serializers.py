@@ -1,17 +1,6 @@
 from rest_framework import serializers
 from rest_framework.relations import SlugRelatedField
 from titles.models import Title, Genre, Category, Review, Comment, GenreTitle
-from users.models import User
-
-
-class UserSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = User
-        fields = (
-            'username', 'email', 'first_name', 'last_name', 'bio', 'role')
-        required_fields = ('email', 'username', )
-        ref_name = 'ReadOnlyUsers'
 
 
 class GenreSerializer(serializers.ModelSerializer):
