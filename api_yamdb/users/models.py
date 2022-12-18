@@ -15,3 +15,13 @@ class User(AbstractUser):
     email = models.EmailField(max_length=254, unique=True, blank=False)
     role = models.CharField(max_length=9, choices=USER_ROLES, default='user')
     username = models.CharField(max_length=150, unique=True)
+    first_name = models.CharField(max_length=150)
+    last_name = models.CharField(max_length=150)
+
+    @property
+    def is_admin(self):
+        return self.role == self.ADMIN
+
+    @property
+    def is_moderator(self):
+        return self.role == self.MODERATOR
