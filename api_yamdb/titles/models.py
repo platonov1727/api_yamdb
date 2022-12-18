@@ -38,6 +38,7 @@ class Title(models.Model):
     category = models.ForeignKey(Category,
                                  on_delete=models.CASCADE,
                                  related_name='titles')
+    rating = models.IntegerField(blank=True, null=True, default=0)
 
     class Meta:
         verbose_name = 'Произведение'

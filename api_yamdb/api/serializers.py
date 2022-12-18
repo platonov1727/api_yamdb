@@ -3,23 +3,31 @@ from rest_framework.relations import SlugRelatedField
 from titles.models import Title, Genre, Category, Review, Comment, GenreTitle
 from users.models import User
 
+class GenreField(serializers.SlugRelatedField):
+    def to_representation(self, value):
+        serializer = GenreSerializer(value)
+        return serializer.data
 
 class GenreSerializer(serializers.ModelSerializer):
 
     class Meta:
         fields = ('name', 'slug')
         model = Genre
+        lookup_field = 'slug'
+        extra_kwargs = {
+            'url': {'lookup_field': 'slug'}
+        }
 
 
 class TitleSerializer(serializers.ModelSerializer):
-    genre = GenreSerializer(required=True, many=True)
+    genre = GenreField(required=True, many=True, slug_field='slug', queryset=Genre.objects.all())
     category = SlugRelatedField(
         slug_field='slug',
         queryset=Category.objects.all(),
     )
 
     class Meta:
-        fields = ('name', 'year', 'description', 'genre', 'category')
+        fields = ('id','name', 'year', 'rating', 'description', 'genre', 'category')
         model = Title
 
 
