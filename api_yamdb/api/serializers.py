@@ -1,12 +1,19 @@
 from rest_framework import serializers
-from rest_framework.relations import SlugRelatedField
-from titles.models import Title, Genre, Category, Review, Comment, GenreTitle
+from titles.models import Title, Genre, Category, Review, Comment
 from users.models import User
 
+
+class CategoryField(serializers.SlugRelatedField):
+
+    def to_representation(self, obj):
+        return CategorySerializer(obj).data
+
+
 class GenreField(serializers.SlugRelatedField):
-    def to_representation(self, value):
-        serializer = GenreSerializer(value)
-        return serializer.data
+
+    def to_representation(self, obj):
+        return GenreSerializer(obj).data
+
 
 class GenreSerializer(serializers.ModelSerializer):
 
@@ -14,71 +21,22 @@ class GenreSerializer(serializers.ModelSerializer):
         fields = ('name', 'slug')
         model = Genre
         lookup_field = 'slug'
-        extra_kwargs = {
-            'url': {'lookup_field': 'slug'}
-        }
+        extra_kwargs = {'url': {'lookup_field': 'slug'}}
 
 
 class TitleSerializer(serializers.ModelSerializer):
-    genre = GenreField(required=True, many=True, slug_field='slug', queryset=Genre.objects.all())
-    category = SlugRelatedField(
-        slug_field='slug',
-        queryset=Category.objects.all(),
-    )
+    genre = GenreField(required=True,
+                       many=True,
+                       slug_field='slug',
+                       queryset=Genre.objects.all())
+    category = CategoryField(slug_field='slug',
+                             queryset=Category.objects.all(),
+                             required=False)
 
     class Meta:
-        fields = ('id','name', 'year', 'rating', 'description', 'genre', 'category')
+        fields = ('id', 'name', 'year', 'rating', 'description', 'genre',
+                  'category')
         model = Title
-
-
-class TitleCreateUpdateSerializer(serializers.ModelSerializer):
-    genre = serializers.ListField(required=True)
-    category = SlugRelatedField(
-        slug_field='slug',
-        queryset=Category.objects.all(),
-    )
-
-    class Meta:
-        fields = ('name', 'year', 'description', 'genre', 'category')
-        model = Title
-
-    def create(self, validated_data):
-        if 'genre' not in self.initial_data:
-            print('no genre')
-            title = Title.objects.create(**validated_data)
-            return title
-        else:
-            genres = validated_data.pop('genre')
-            title = Title.objects.create(**validated_data)
-            for genre in genres:
-                print(genre)
-                current_genre, status = Genre.objects.get_or_create(
-                    slug=genre
-                )
-                GenreTitle.objects.create(
-                    genre=current_genre, title=title
-                )
-                return title
-
-    def update(self, instance, validated_data):
-        instance.name = validated_data.get('name', instance.name)
-        instance.year = validated_data.get('year', instance.year)
-        instance.discription = validated_data.get(
-            'discription', instance.discription
-        )
-        instance.category = validated_data.get('category', instance.category)
-        if 'genre' in validated_data:
-            genre_data = validated_data.pop('genre')
-            lst = []
-            for genre in genre_data:
-                current_genre, status = Genre.objects.get_or_create(
-                    slug=genre
-                )
-                lst.append(current_genre)
-            instance.genre.set(lst)
-
-        instance.save()
-        return instance
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -86,6 +44,7 @@ class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         fields = ('name', 'slug')
         model = Category
+        lookup_field = 'slug'
 
 
 class ReviewSerializer(serializers.ModelSerializer):
@@ -107,17 +66,41 @@ class CommentSerializer(serializers.ModelSerializer):
 
 
 class UserSerializer(serializers.ModelSerializer):
+
     class Meta:
         model = User
-        fields = '__all__'
+        fields = ('username', 'email', 'first_name', 'last_name', 'bio',
+                  'role')
 
-    def validate_username(self, value):
-        if value == 'me':
-            raise serializers.ValidationError('Выберите другое имя.')
-        return value
+    def validate_username(self, username):
+        if username in 'me':
+            raise serializers.ValidationError('Использовать имя me запрещено')
+        return username
 
 
 class TokenSerializer(serializers.Serializer):
-    username = serializers.CharField(max_length=150)
-    confirmation_code = serializers.CharField(max_length=254)
+    username = serializers.RegexField(regex=r'^[\w.@+-]+$',
+                                      max_length=150,
+                                      required=True)
+    confirmation_code = serializers.CharField(max_length=254, required=True)
 
+
+class UserCreateSerializer(serializers.ModelSerializer):
+    """Сериализатор для создания объекта класса User."""
+
+    class Meta:
+        model = User
+        fields = ('username', 'email')
+
+    def validate(self, data):
+        """Запрещает пользователям присваивать себе имя me
+        и использовать повторные username и email."""
+        if data.get('username') == 'me':
+            raise serializers.ValidationError('Использовать имя me запрещено')
+        if User.objects.filter(username=data.get('username')):
+            raise serializers.ValidationError(
+                'Пользователь с таким username уже существует')
+        if User.objects.filter(email=data.get('email')):
+            raise serializers.ValidationError(
+                'Пользователь с таким email уже существует')
+        return data

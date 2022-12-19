@@ -22,6 +22,6 @@ router.register(
 urlpatterns = [
     path('v1/users/me/', UserMePatchView.as_view()),
     path('v1/', include(router.urls)),
-    path('v1/auth/signup/', RegistrationAPI.as_view()),
+    path('v1/auth/signup/', RegistrationAPI),
     path('v1/auth/token/', TokenAPI.as_view()),
 ]
