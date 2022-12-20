@@ -28,7 +28,9 @@ from .serializers import (CategorySerializer, CommentSerializer,
 
 class TitleViewSet(viewsets.ModelViewSet):
     serializer_class = TitleSerializer
-    queryset = Title.objects.all()
+    queryset = Title.objects.all().annotate(
+        Avg("reviews__score")
+    ).order_by("name")
     pagination_class = PageNumberPagination
     filter_backends = (DjangoFilterBackend, )
     filterset_class = TitlesFilter
