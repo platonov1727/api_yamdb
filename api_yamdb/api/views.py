@@ -23,14 +23,14 @@ from .permissions import IsAdmin, IsAdminOrReadOnly, IsAdminModeratorOwnerOrRead
 from .serializers import (CategorySerializer, CommentSerializer,
                           GenreSerializer, ReviewSerializer, TitleSerializer,
                           TokenSerializer, UserSerializer,
-                          RegisterDataSerializer, AdminSerializer, ReadOnlyTitleSerializer)
+                          RegisterDataSerializer, AdminSerializer,
+                          ReadOnlyTitleSerializer)
 
 
 class TitleViewSet(viewsets.ModelViewSet):
     serializer_class = TitleSerializer
     queryset = Title.objects.all().annotate(
-        Avg("reviews__score")
-    ).order_by("name")
+        Avg("reviews__score")).order_by("name")
     pagination_class = PageNumberPagination
     filter_backends = (DjangoFilterBackend, )
     filterset_class = TitlesFilter
@@ -42,10 +42,8 @@ class TitleViewSet(viewsets.ModelViewSet):
         return TitleSerializer
 
 
-class GenreViewSet(mixins.CreateModelMixin,
-                   mixins.DestroyModelMixin,
-                   mixins.ListModelMixin,
-                   viewsets.GenericViewSet):
+class GenreViewSet(mixins.CreateModelMixin, mixins.DestroyModelMixin,
+                   mixins.ListModelMixin, viewsets.GenericViewSet):
     queryset = Genre.objects.all()
     serializer_class = GenreSerializer
     pagination_class = PageNumberPagination
@@ -55,10 +53,8 @@ class GenreViewSet(mixins.CreateModelMixin,
     lookup_field = 'slug'
 
 
-class CategoryViewSet(mixins.CreateModelMixin,
-                      mixins.DestroyModelMixin,
-                      mixins.ListModelMixin,
-                      viewsets.GenericViewSet):
+class CategoryViewSet(mixins.CreateModelMixin, mixins.DestroyModelMixin,
+                      mixins.ListModelMixin, viewsets.GenericViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
     pagination_class = PageNumberPagination
@@ -75,8 +71,7 @@ class AdminAPI(viewsets.ModelViewSet):
     permission_classes = (IsAdmin, )
     filter_backends = (filters.SearchFilter, )
     search_fields = ('username', )
-    http_method_names = [
-        'get', 'post', 'list', 'patch', 'delete']
+    http_method_names = ['get', 'post', 'list', 'patch', 'delete']
 
 
 class UserMePatchView(APIView):
@@ -100,7 +95,6 @@ class UserMePatchView(APIView):
                             status=status.HTTP_400_BAD_REQUEST)
         return Response('Вы не авторизованы',
                         status=status.HTTP_401_UNAUTHORIZED)
-
 
 
 class CommentViewSet(viewsets.ModelViewSet):
