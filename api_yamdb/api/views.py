@@ -12,6 +12,7 @@ from rest_framework_simplejwt.tokens import RefreshToken, AccessToken
 from titles.models import Category, Genre, Title
 from reviews.models import Review, Comment
 from users.models import User
+from rest_framework import mixins
 
 from rest_framework.decorators import action, api_view, permission_classes
 
@@ -39,22 +40,30 @@ class TitleViewSet(viewsets.ModelViewSet):
         return TitleSerializer
 
 
-class GenreViewSet(viewsets.ModelViewSet):
+class GenreViewSet(mixins.CreateModelMixin,
+                   mixins.DestroyModelMixin,
+                   mixins.ListModelMixin,
+                   viewsets.GenericViewSet):
     queryset = Genre.objects.all()
     serializer_class = GenreSerializer
     pagination_class = PageNumberPagination
     filter_backends = (filters.SearchFilter, )
     search_fields = ('name', )
     permission_classes = (IsAdminOrReadOnly, )
+    lookup_field = 'slug'
 
 
-class CategoryViewSet(viewsets.ModelViewSet):
+class CategoryViewSet(mixins.CreateModelMixin,
+                   mixins.DestroyModelMixin,
+                   mixins.ListModelMixin,
+                   viewsets.GenericViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
     pagination_class = PageNumberPagination
     filter_backends = (filters.SearchFilter, )
     search_fields = ('name', )
     permission_classes = (IsAdminOrReadOnly, )
+    lookup_field = 'slug'
 
 
 class AdminAPI(viewsets.ModelViewSet):
