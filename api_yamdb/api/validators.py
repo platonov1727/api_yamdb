@@ -1,5 +1,4 @@
-from django.core.validators import RegexValidator, MaxLengthValidator
-from django.core.exceptions import ValidationError
+from django.core.validators import RegexValidator
 
 user_regex_validator = RegexValidator(
     regex=r'^[\w.@+-]+$',
