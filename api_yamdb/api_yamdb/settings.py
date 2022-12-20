@@ -18,6 +18,7 @@ IMPORT_EXPORT_USE_TRANSACTIONS = True
 
 INSTALLED_APPS = [
     'titles.apps.TitlesConfig',
+    'reviews.apps.ReviewsConfig',
     'api.apps.ApiConfig',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -94,7 +95,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 # Internationalization
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'ru'
 
 TIME_ZONE = 'UTC'
 
@@ -117,7 +118,6 @@ AUTH_USER_MODEL = 'users.User'
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated',
-        # 'rest_framework.permissions.AllowAny',
     ],
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_simplejwt.authentication.JWTAuthentication',
@@ -131,6 +131,15 @@ SIMPLE_JWT = {
     'AUTH_HEADER_TYPES': ('Bearer',),
 }
 
-EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
+
+# EMAIL_HOST = 'smtp.yandex.ru'
+# EMAIL_PORT = 465
+# EMAIL_USE_TLS = False
+# EMAIL_USE_SSL = True
+# EMAIL_HOST_USER = 'backendtool@yandex.ru'
+# EMAIL_HOST_PASSWORD = 'ldxmgunwagigrcpt'
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_FILE_PATH = os.path.join(BASE_DIR, 'sent_emails')
 DEFAULT_FROM_EMAIL = 'My Domain <noreply@mydomain.com>'

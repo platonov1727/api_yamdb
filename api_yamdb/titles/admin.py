@@ -1,5 +1,6 @@
 from django.contrib import admin
-from .models import Title, Genre, Category, GenreTitle, Review, Comment
+from .models import Title, Genre, Category, GenreTitle
+from reviews.models import Review, Comment
 from import_export import resources
 from import_export.admin import ImportExportModelAdmin
 from import_export.fields import Field
