@@ -54,9 +54,9 @@ class GenreViewSet(mixins.CreateModelMixin,
 
 
 class CategoryViewSet(mixins.CreateModelMixin,
-                   mixins.DestroyModelMixin,
-                   mixins.ListModelMixin,
-                   viewsets.GenericViewSet):
+                      mixins.DestroyModelMixin,
+                      mixins.ListModelMixin,
+                      viewsets.GenericViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
     pagination_class = PageNumberPagination
@@ -73,6 +73,8 @@ class AdminAPI(viewsets.ModelViewSet):
     permission_classes = (IsAdmin, )
     filter_backends = (filters.SearchFilter, )
     search_fields = ('username', )
+    http_method_names = [
+        'get', 'post', 'list', 'patch', 'delete']
 
 
 class UserMePatchView(APIView):
@@ -96,6 +98,7 @@ class UserMePatchView(APIView):
                             status=status.HTTP_400_BAD_REQUEST)
         return Response('Вы не авторизованы',
                         status=status.HTTP_401_UNAUTHORIZED)
+
 
 
 class CommentViewSet(viewsets.ModelViewSet):

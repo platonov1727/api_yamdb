@@ -2,7 +2,6 @@ from rest_framework import serializers
 from titles.models import Title, Genre, Category
 from reviews.models import Review, Comment
 from users.models import User
-from rest_framework.validators import UniqueValidator
 from django.shortcuts import get_object_or_404
 from rest_framework.exceptions import ValidationError
 
@@ -112,7 +111,8 @@ class TokenSerializer(serializers.Serializer):
 
 
 class RegisterDataSerializer(serializers.Serializer):
-    username = serializers.RegexField(regex=r'^[\w.@+-]+$', max_length=150)
+    username = serializers.RegexField(
+        regex=r'^[\w.@+-]+$', max_length=150, required=True)
     email = serializers.EmailField(required=True, max_length=254)
 
     def validate(self, data):

@@ -10,7 +10,7 @@ class User(AbstractUser):
     ADMIN = 'admin'
     MODERATOR = 'moderator'
     USER_ROLES = [(USER, 'user'), (MODERATOR, 'moderator'), (ADMIN, 'admin')]
-    username = models.CharField(null=True,
+    username = models.CharField(blank=False,
                                 max_length=150,
                                 unique=True,
                                 validators=[user_regex_validator])
