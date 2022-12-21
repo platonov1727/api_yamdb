@@ -11,7 +11,7 @@ from .models import User
 from api_yamdb.settings import DEFAULT_FROM_EMAIL
 from .serializers import (TokenSerializer, UserSerializer,
                           RegisterDataSerializer, AdminSerializer)
-from api.permissions import IsAdmin
+from .permissions import IsAdmin
 
 
 class AdminAPI(viewsets.ModelViewSet):
