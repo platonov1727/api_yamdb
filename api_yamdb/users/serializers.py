@@ -10,11 +10,6 @@ class UserSerializer(serializers.ModelSerializer):
                   'role')
         read_only_fields = ('role', )
 
-    def validate_username(self, username):
-        if username in 'me':
-            raise serializers.ValidationError('Использовать имя me запрещено')
-        return username
-
 
 class TokenSerializer(serializers.Serializer):
     username = serializers.CharField()
@@ -60,8 +55,3 @@ class AdminSerializer(serializers.ModelSerializer):
         model = User
         fields = ('username', 'email', 'first_name', 'last_name', 'bio',
                   'role')
-
-    def validate_username(self, username):
-        if username in 'me':
-            raise serializers.ValidationError('Использовать имя me запрещено')
-        return username
