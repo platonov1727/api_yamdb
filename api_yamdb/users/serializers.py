@@ -32,10 +32,9 @@ class RegisterDataSerializer(serializers.Serializer):
         if data.get('username') == 'me':
             raise serializers.ValidationError(
                 'Использоваться имя me запрещено')
-        if User.objects.filter(username=data.get('username'),
-                               email=data.get('email')).exists():
-            return data
-        else:
+        if not User.objects.filter(username=data.get('username'),
+                                   email=data.get('email')).exists():
+
             if User.objects.filter(username=data.get('username')):
                 raise serializers.ValidationError(
                     'Пользователь с таким username уже существует')
