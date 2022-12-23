@@ -29,10 +29,10 @@
 
 #### Запуск проекта в dev-режиме
 
-`git clone <название репозитория>`  
-`python -m venv venv`  
-`source venv/bin/activate`
-`pip install -r requirements.txt`
-`python manage.py migrate`
-`Load test data in django admin panel`
-`python manage.py runserver`
+```git clone <название репозитория>
+python -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+python manage.py migrate
+Load test data in django admin panel
+python manage.py runserver```
