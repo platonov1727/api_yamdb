@@ -14,23 +14,17 @@ class GenreSerializer(serializers.ModelSerializer):
         model = Genre
         lookup_field = 'slug'
         lookup_field = 'slug'
-        extra_kwargs = {
-            'url': {'lookup_field': 'slug'}
-        }
+        extra_kwargs = {'url': {'lookup_field': 'slug'}}
 
 
 class TitleSerializer(serializers.ModelSerializer):
-    genre = SlugRelatedField(
-        required=True,
-        many=True,
-        slug_field='slug',
-        queryset=Genre.objects.all()
-    )
-    category = SlugRelatedField(
-        required=False,
-        slug_field='slug',
-        queryset=Category.objects.all()
-    )
+    genre = SlugRelatedField(required=True,
+                             many=True,
+                             slug_field='slug',
+                             queryset=Genre.objects.all())
+    category = SlugRelatedField(required=False,
+                                slug_field='slug',
+                                queryset=Category.objects.all())
 
     class Meta:
         fields = ('id', 'name', 'year', 'rating', 'description', 'genre',
@@ -44,9 +38,7 @@ class CategorySerializer(serializers.ModelSerializer):
         fields = ('name', 'slug')
         model = Category
         lookup_field = 'slug'
-        extra_kwargs = {
-            'url': {'lookup_field': 'slug'}
-        }
+        extra_kwargs = {'url': {'lookup_field': 'slug'}}
 
 
 class ReviewSerializer(serializers.ModelSerializer):
@@ -92,5 +84,4 @@ class ReadOnlyTitleSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Title
-        fields = ('id', 'name', 'year', 'rating', 'description', 'genre',
-                  'category')
+        fields = '__all__'
