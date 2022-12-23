@@ -7,12 +7,15 @@ from titles.models import Title
 class Review(models.Model):
     title = models.ForeignKey(Title,
                               on_delete=models.CASCADE,
-                              related_name='reviews')
-    text = models.TextField()
+                              related_name='reviews',
+                              verbose_name='Название')
+    text = models.TextField(verbose_name='Текст')
     author = models.ForeignKey(User,
                                on_delete=models.CASCADE,
                                related_name='rewiews')
-    pub_date = models.DateTimeField(auto_now_add=True, db_index=True)
+    pub_date = models.DateTimeField(auto_now_add=True,
+                                    db_index=True,
+                                    verbose_name='Дата публикации')
     score = models.PositiveSmallIntegerField(
         'Рейтинг', validators=[MinValueValidator(1),
                                MaxValueValidator(10)])
@@ -33,16 +36,16 @@ class Review(models.Model):
 class Comment(models.Model):
     author = models.ForeignKey(User,
                                on_delete=models.CASCADE,
-                               related_name='comments')
-    text = models.TextField(max_length=500)
-    pub_date = models.DateTimeField(auto_now_add=True, db_index=True)
+                               related_name='comments',
+                               verbose_name='автор')
+    text = models.TextField(max_length=500, verbose_name='Текст')
+    pub_date = models.DateTimeField(auto_now_add=True,
+                                    db_index=True,
+                                    verbose_name='Дата публикации')
     review = models.ForeignKey(Review,
                                on_delete=models.CASCADE,
-                               related_name='comments')
-
-    class Meta:
-        verbose_name = 'Комментарий'
-        verbose_name_plural = 'Комментарии'
+                               related_name='comments',
+                               verbose_name='Произведение')
 
     def __str__(self):
         return self.text
