@@ -29,8 +29,13 @@ class TitleViewSet(viewsets.ModelViewSet):
         return TitleSerializer
 
 
-class GenreViewSet(mixins.CreateModelMixin, mixins.DestroyModelMixin,
-                   mixins.ListModelMixin, viewsets.GenericViewSet):
+class ListCreateDestroyViewSet(
+        mixins.CreateModelMixin, mixins.DestroyModelMixin,
+        mixins.ListModelMixin, viewsets.GenericViewSet):
+    pass
+
+
+class GenreViewSet(ListCreateDestroyViewSet):
     queryset = Genre.objects.all()
     serializer_class = GenreSerializer
     pagination_class = PageNumberPagination
@@ -40,8 +45,7 @@ class GenreViewSet(mixins.CreateModelMixin, mixins.DestroyModelMixin,
     lookup_field = 'slug'
 
 
-class CategoryViewSet(mixins.CreateModelMixin, mixins.DestroyModelMixin,
-                      mixins.ListModelMixin, viewsets.GenericViewSet):
+class CategoryViewSet(ListCreateDestroyViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
     pagination_class = PageNumberPagination
