@@ -36,3 +36,9 @@ pip install -r requirements.txt
 python manage.py migrate
 Load test data in django admin panel
 python manage.py runserver```
+
+#### Авторы
+
+https://github.com/Shabanov010
+https://github.com/platonov1727
+https://github.com/mariarozhina
