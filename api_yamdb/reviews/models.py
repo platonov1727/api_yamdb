@@ -8,11 +8,12 @@ class Review(models.Model):
     title = models.ForeignKey(Title,
                               on_delete=models.CASCADE,
                               related_name='reviews',
-                              verbose_name='Название')
+                              verbose_name='Произведение')
     text = models.TextField(verbose_name='Текст')
     author = models.ForeignKey(User,
                                on_delete=models.CASCADE,
-                               related_name='rewiews')
+                               related_name='rewiews',
+                               verbose_name='Автор')
     pub_date = models.DateTimeField(auto_now_add=True,
                                     db_index=True,
                                     verbose_name='Дата публикации')
@@ -23,7 +24,7 @@ class Review(models.Model):
     class Meta:
         verbose_name = 'Отзыв'
         verbose_name_plural = 'Отзывы'
-        ordering = ['pub_date']
+        ordering = ('pub_date',)
         constraints = [
             models.UniqueConstraint(fields=['title', 'author'],
                                     name='unique_review'),
@@ -45,7 +46,7 @@ class Comment(models.Model):
     review = models.ForeignKey(Review,
                                on_delete=models.CASCADE,
                                related_name='comments',
-                               verbose_name='Произведение')
+                               verbose_name='Комментарий')
 
     def __str__(self):
         return self.text
@@ -53,4 +54,4 @@ class Comment(models.Model):
     class Meta:
         verbose_name = 'Комментарий'
         verbose_name_plural = 'Комментарии'
-        ordering = ['pub_date']
+        ordering = ('pub_date',)

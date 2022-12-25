@@ -53,25 +53,25 @@ class RegistrationAPI(APIView):
 
     def post(self, request):
         serializer = RegisterDataSerializer(data=request.data)
-        if serializer.is_valid():
-            if User.objects.filter(
-                    username=serializer.validated_data['username'],
-                    email=serializer.validated_data['email']).exists():
-                user = get_object_or_404(
-                    User,
-                    username=serializer.validated_data['username'],
-                    email=serializer.validated_data['email'])
-            else:
-                serializer.save()
-                user = get_object_or_404(
-                    User, username=serializer.validated_data['username'])
-            confirmation_code = default_token_generator.make_token(user)
-            send_mail('Подтверждение регистрации',
-                      f'Подтвердите ваш e-mail: {confirmation_code}',
-                      DEFAULT_FROM_EMAIL, [serializer.data['email']],
-                      fail_silently=False)
-            return Response(serializer.data, status.HTTP_200_OK)
-        return Response(serializer.errors, status.HTTP_400_BAD_REQUEST)
+        if not serializer.is_valid():
+            return Response(serializer.errors, status.HTTP_400_BAD_REQUEST)
+        if User.objects.filter(
+                username=serializer.validated_data['username'],
+                email=serializer.validated_data['email']).exists():
+            user = get_object_or_404(
+                User,
+                username=serializer.validated_data['username'],
+                email=serializer.validated_data['email'])
+        else:
+            serializer.save()
+            user = get_object_or_404(
+                User, username=serializer.validated_data['username'])
+        confirmation_code = default_token_generator.make_token(user)
+        send_mail('Подтверждение регистрации',
+                  f'Подтвердите ваш e-mail: {confirmation_code}',
+                  DEFAULT_FROM_EMAIL, [serializer.data['email']],
+                  fail_silently=False)
+        return Response(serializer.data, status.HTTP_200_OK)
 
 
 class TokenAPI(APIView):

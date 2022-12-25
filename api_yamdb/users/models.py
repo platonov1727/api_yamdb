@@ -13,13 +13,28 @@ class User(AbstractUser):
     username = models.CharField(blank=False,
                                 max_length=150,
                                 unique=True,
-                                validators=[user_regex_validator])
+                                validators=[user_regex_validator],
+                                verbose_name='Пользователь')
 
-    bio = models.TextField('Биография', blank=True)
-    email = models.EmailField(max_length=254, unique=True, blank=False)
-    first_name = models.CharField(max_length=150, blank=True)
-    last_name = models.CharField(max_length=150, blank=True)
-    role = models.CharField(max_length=9, choices=USER_ROLES, default='user')
+    bio = models.TextField(verbose_name='Биография', blank=True)
+    email = models.EmailField(
+        verbose_name='Электронная почта',
+        max_length=254,
+        unique=True,
+        blank=False)
+    first_name = models.CharField(
+        max_length=150,
+        blank=True,
+        verbose_name='Имя')
+    last_name = models.CharField(
+        max_length=150,
+        blank=True,
+        verbose_name='Фамилия')
+    role = models.CharField(
+        max_length=9,
+        choices=USER_ROLES,
+        default='user',
+        verbose_name='Роль')
 
     def __str__(self):
         return self.username
